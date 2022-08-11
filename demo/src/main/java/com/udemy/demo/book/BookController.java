@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,7 +25,7 @@ public class BookController {
 	}
 	
 	@PostMapping(value="/books")
-	public ResponseEntity addBook(Book book) {
+	public ResponseEntity addBook(@RequestBody Book book) {
 		
 		return new ResponseEntity(book, HttpStatus.CREATED);
 	}
@@ -36,8 +37,16 @@ public class BookController {
 	}
 	
 	@PutMapping(value="/books/{bookId}")
-	public ResponseEntity updateBook(@PathVariable("bookId") String bookId, Book book) {
+	public ResponseEntity updateBook(@PathVariable("bookId") String bookId, @RequestBody Book book) {
 		
 		return new ResponseEntity(HttpStatus.OK);
+	}
+	
+	@GetMapping("/categories")
+	public ResponseEntity listCategories () {
+		Category category = new Category("BD");
+		Category categoryRoman = new Category("Roman");
+		
+		return new ResponseEntity(Arrays.asList(category, categoryRoman), HttpStatus.OK);
 	}
 }
