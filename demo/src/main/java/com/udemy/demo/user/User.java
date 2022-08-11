@@ -9,6 +9,9 @@ public class User {
 	private String firstName;
 	@Size(min = 2, max = 25, message = "Le nom doit faire entre 2 et 25 caractères")
 	private String lastName;
+	public User() {
+		super();
+	}
 	private String password;
 	
 	
