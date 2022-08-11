@@ -2,6 +2,8 @@ package com.udemy.demo.book;
 
 import java.util.Arrays;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +27,7 @@ public class BookController {
 	}
 	
 	@PostMapping(value="/books")
-	public ResponseEntity addBook(@RequestBody Book book) {
+	public ResponseEntity addBook(@RequestBody @Valid Book book) {
 		
 		return new ResponseEntity(book, HttpStatus.CREATED);
 	}
@@ -37,7 +39,7 @@ public class BookController {
 	}
 	
 	@PutMapping(value="/books/{bookId}")
-	public ResponseEntity updateBook(@PathVariable("bookId") String bookId, @RequestBody Book book) {
+	public ResponseEntity updateBook(@PathVariable("bookId") String bookId, @RequestBody @Valid Book book) {
 		
 		return new ResponseEntity(HttpStatus.OK);
 	}
