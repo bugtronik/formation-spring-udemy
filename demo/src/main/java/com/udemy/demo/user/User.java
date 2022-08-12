@@ -1,8 +1,17 @@
 package com.udemy.demo.user;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
+@Entity
 public class User {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 	
 	private String email;
 	@Size(min = 2, max = 25, message = "Le prénom doit faire entre 2 et 25 caractères")
@@ -15,6 +24,12 @@ public class User {
 	private String password;
 	
 	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public User(String email) {
 		super();
 		this.email = email;
