@@ -2,14 +2,31 @@ package com.udemy.demo.borrow;
 
 import java.time.LocalDate;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
 import com.udemy.demo.book.Book;
 import com.udemy.demo.user.User;
 
+@Entity
 public class Borrow {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+	
+	@ManyToOne
 	private User borrower;
+	
+	@ManyToOne
 	private User lender;
+	
+	@ManyToOne
 	private Book book;
+	
 	private LocalDate askDate;
 	private LocalDate closeDate;
 	
