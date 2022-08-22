@@ -53,7 +53,7 @@ public class BookController {
 		return new ResponseEntity(books, HttpStatus.OK);
 	}
 	
-	private Integer getUserConnectId() {
+	public static Integer getUserConnectId() {
 		// TODO Auto-generated method stub
 		return 1;
 	}
