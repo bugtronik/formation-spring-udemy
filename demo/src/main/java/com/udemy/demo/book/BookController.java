@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udemy.demo.borrow.Borrow;
+import com.udemy.demo.borrow.BorrowRepository;
 import com.udemy.demo.user.User;
 import com.udemy.demo.user.UserRepository;
 
@@ -32,6 +34,9 @@ public class BookController {
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
+	
+	@Autowired
+	private BorrowRepository borrowRepository;
 
 	@GetMapping(value="/books")
 	public ResponseEntity listBooks(@RequestParam(required = false) BookStatus status) {
@@ -79,6 +84,20 @@ public class BookController {
 	@DeleteMapping(value="/books/{bookId}")
 	public ResponseEntity deleteBook(@PathVariable("bookId") String bookId) {
 		
+		Optional<Book> bookToDelete = bookRepository.findById(Integer.valueOf(bookId));
+		if(!bookToDelete.isPresent() ) {
+			return new ResponseEntity("Book not found", HttpStatus.BAD_REQUEST);
+		}
+		Book book = bookToDelete.get();
+		List<Borrow> borrows = borrowRepository.findByBookId(book.getId());
+		for(Borrow borrow : borrows) {
+			if(borrow.getCloseDate() == null) {
+				User borrower = borrow.getBorrower();
+				return new ResponseEntity(borrower, HttpStatus.CONFLICT);
+			}
+		}
+		book.setDeleted(true);
+		bookRepository.save(book);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	
