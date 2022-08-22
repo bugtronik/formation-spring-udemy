@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.udemy.demo.borrow.Borrow;
 import com.udemy.demo.borrow.BorrowRepository;
-import com.udemy.demo.user.User;
+import com.udemy.demo.user.UserInfo;
 import com.udemy.demo.user.UserRepository;
 
 @RestController
@@ -62,7 +62,7 @@ public class BookController {
 	public ResponseEntity addBook(@RequestBody @Valid Book book) {
 		
 		Integer userConnectedId = this.getUserConnectId();
-		Optional<User> user = userRepository.findById(userConnectedId);
+		Optional<UserInfo> user = userRepository.findById(userConnectedId);
 		Optional<Category> category = categoryRepository.findById(book.getCategoryId());
 		if(category.isPresent()) {
 			book.setCategory(category.get());
@@ -92,7 +92,7 @@ public class BookController {
 		List<Borrow> borrows = borrowRepository.findByBookId(book.getId());
 		for(Borrow borrow : borrows) {
 			if(borrow.getCloseDate() == null) {
-				User borrower = borrow.getBorrower();
+				UserInfo borrower = borrow.getBorrower();
 				return new ResponseEntity(borrower, HttpStatus.CONFLICT);
 			}
 		}

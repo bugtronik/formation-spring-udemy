@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
-import com.udemy.demo.user.User;
+import com.udemy.demo.user.UserInfo;
 
 
 @Entity
@@ -25,7 +25,7 @@ public class Book {
 	private Category category;
 	
 	@ManyToOne
-	private User user;
+	private UserInfo user;
 	
 	private BookStatus status;
 	
@@ -47,10 +47,10 @@ public class Book {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public User getUser() {
+	public UserInfo getUser() {
 		return user;
 	}
-	public void setUser(User user) {
+	public void setUser(UserInfo user) {
 		this.user = user;
 	}
 	public BookStatus getStatus() {

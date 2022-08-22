@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
 @Entity
-public class User {
+public class UserInfo {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class User {
 	private String firstName;
 	@Size(min = 2, max = 25, message = "Le nom doit faire entre 2 et 25 caractères")
 	private String lastName;
-	public User() {
+	public UserInfo() {
 		super();
 	}
 	private String password;
@@ -30,7 +30,7 @@ public class User {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public User(String email) {
+	public UserInfo(String email) {
 		super();
 		this.email = email;
 	}
