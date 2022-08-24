@@ -9,10 +9,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.udemy.demo.user.UserInfo;
 import com.udemy.demo.user.UserRepository;
 
+@Service
 public class MyUserDetailService implements UserDetailsService {
 	
 	@Autowired
@@ -20,7 +22,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-		UserInfo user = userRepository.findByOneEmail(login);
+		UserInfo user = userRepository.findOneByEmail(login);
 		
 		final List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));

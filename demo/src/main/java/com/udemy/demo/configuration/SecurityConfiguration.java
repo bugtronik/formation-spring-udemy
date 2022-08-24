@@ -33,6 +33,12 @@ public class SecurityConfiguration {
 			.authorizeHttpRequests()
 			.antMatchers("/users").permitAll()
 			.antMatchers("/authenticate").permitAll()
+			.antMatchers("/isConnected").permitAll()
+			.antMatchers("/v3/api-docs/**").permitAll()
+			.antMatchers("/swagger-resources/**").permitAll()
+			.antMatchers("/swagger-ui/**").permitAll()
+			.antMatchers("/swagger-ui.html").permitAll()
+			.antMatchers("/webjars/**").permitAll()
 			.anyRequest().authenticated();
 		
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

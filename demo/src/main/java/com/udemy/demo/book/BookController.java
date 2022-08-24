@@ -1,5 +1,6 @@
 package com.udemy.demo.book;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +25,10 @@ import com.udemy.demo.borrow.BorrowRepository;
 import com.udemy.demo.user.UserInfo;
 import com.udemy.demo.user.UserRepository;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public class BookController {
 	
 	@Autowired
@@ -39,9 +44,9 @@ public class BookController {
 	private BorrowRepository borrowRepository;
 
 	@GetMapping(value="/books")
-	public ResponseEntity listBooks(@RequestParam(required = false) BookStatus status) {
+	public ResponseEntity listBooks(@RequestParam(required = false) BookStatus status, Principal principal) {
 		
-		Integer userConnectedId = this.getUserConnectId();
+		Integer userConnectedId = this.getUserConnectId(principal);
 		List<Book> books;
 		
 		if(status != null && status == BookStatus.FREE) {
@@ -53,15 +58,19 @@ public class BookController {
 		return new ResponseEntity(books, HttpStatus.OK);
 	}
 	
-	public static Integer getUserConnectId() {
-		// TODO Auto-generated method stub
-		return 1;
+	public Integer getUserConnectId(Principal principal) {
+		if(!(principal instanceof UsernamePasswordAuthenticationToken)) {
+			throw new RuntimeException(("User not found"));
+		}
+		UsernamePasswordAuthenticationToken user = (UsernamePasswordAuthenticationToken) principal;
+		UserInfo oneByEmail = userRepository.findOneByEmail(user.getName());
+		return oneByEmail.getId();
 	}
 
 	@PostMapping(value="/books")
-	public ResponseEntity addBook(@RequestBody @Valid Book book) {
+	public ResponseEntity addBook(@RequestBody @Valid Book book, Principal principal) {
 		
-		Integer userConnectedId = this.getUserConnectId();
+		Integer userConnectedId = this.getUserConnectId(principal);
 		Optional<UserInfo> user = userRepository.findById(userConnectedId);
 		Optional<Category> category = categoryRepository.findById(book.getCategoryId());
 		if(category.isPresent()) {

@@ -10,7 +10,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +37,7 @@ public class UserController {
 	@PostMapping(value="/users")
 	public ResponseEntity addUser(@Valid @RequestBody UserInfo userInfo) {
 		
-		UserInfo existingUser = userRepository.findByOneEmail(userInfo.getEmail());
+		UserInfo existingUser = userRepository.findOneByEmail(userInfo.getEmail());
 		if(existingUser != null) {
 			return new ResponseEntity("User already existing", HttpStatus.BAD_REQUEST);
 		}
@@ -45,8 +48,17 @@ public class UserController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 		
-		return new ResponseEntity(user, HttpStatus.CREATED);
+		return new ResponseEntity(user, httpHeaders, HttpStatus.CREATED);
 		
+	}
+	
+	@GetMapping(value = "/isConnected")
+	public ResponseEntity getUserConnected() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(principal instanceof UserDetails) {
+			return new ResponseEntity(((UserDetails) principal).getUsername(), HttpStatus.OK);
+		}
+		return new ResponseEntity("User is not connected", HttpStatus.FORBIDDEN);
 	}
 	
 	private UserInfo saveUser(UserInfo userInfo) {

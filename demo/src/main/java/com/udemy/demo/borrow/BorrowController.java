@@ -1,5 +1,6 @@
 package com.udemy.demo.borrow;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +21,10 @@ import com.udemy.demo.book.BookStatus;
 import com.udemy.demo.user.UserInfo;
 import com.udemy.demo.user.UserRepository;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public class BorrowController {
 	
 	@Autowired
@@ -32,16 +36,19 @@ public class BorrowController {
 	@Autowired
 	UserRepository userRepository;
 	
+	@Autowired
+	BookController bookController;
+	
 	@GetMapping(value="/borrows")
-	public ResponseEntity list() {
-		List<Borrow> borrows = borrowRepository.findByBorrowerId(BookController.getUserConnectId());
+	public ResponseEntity getMyBorrows(Principal principal) {
+		List<Borrow> borrows = borrowRepository.findByBorrowerId(bookController.getUserConnectId(principal));
 		return new ResponseEntity(borrows, HttpStatus.OK);
 	}
 	
 	@PostMapping("/borrows/{bookId}")
-	public ResponseEntity createBorrow(@PathVariable("bookId") String bookId) {
+	public ResponseEntity createBorrow(@PathVariable("bookId") String bookId, Principal principal) {
 		
-		Integer userConnectedId = BookController.getUserConnectId();
+		Integer userConnectedId = bookController.getUserConnectId(principal);
 		Optional<UserInfo> borrower = userRepository.findById(userConnectedId);
 		Optional<Book> book = bookRepository.findById(Integer.valueOf(bookId));
 		
